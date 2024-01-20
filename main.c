@@ -1,109 +1,74 @@
 #include "monty.h"
-buas_t buas = {NULL, NULL, NULL, 0};
 /**
- * main -function for monty code reader
- * @argc: input num
- * @argv: input atg
- * @Retur: success
+ * main - function to monty code interpreter
+ * @argc: input num of arguments
+ * @argv: input argument
+ * Return: success
  */
 
 int main(int argc, char *argv[])
 {
-char *content = NULL;
-FILE *f;
-size_t size = 0;
-ssize_t read_line = 1;
-stack_t *stck = NULL;
-unsigned int counter = 0;
-
-if (argc != 2)
-{
-fprintf(stderr, "USAGE: monty file\n");
+FILE *file;
+char *buffer;
+stack_t *stack = NULL;
+if (argc != 2) {
+fprintf(stderr, "Error: No input file\n");
 exit(EXIT_FAILURE);
 }
-f = fopen(argv[1], "r");
-buas.file = f;
-if (!f)
-{
+file = fopen(argv[1], "r");
+if (file == NULL) {
 fprintf(stderr, "Error: Can't open file %s\n", argv[1]);
 exit(EXIT_FAILURE);
 }
-while (read_line > 0)
-{
-content = NULL;
-read_line = getline(&content, &size, f);
-buas.content = content;
-counter++;
-if (read_line > 0)
-{
-execute(content, &stck, counter, f);
-}
-}
-free(content);
-
-free_stack(stck);
-fclose(f);
+buffer = _read_file(file);
+execute(buffer, &stack);
+free_stack(stack);
+free(buffer);
+fclose(file);
 return (0);
 }
 
-
 /**
- * r_pall - prints-- the numbers in the the stack
- * @head: stack head input value
- * @counter: no 
- * Return: no rturn
-*/
-void r_pall(stack_t **head, unsigned int counter)
+ * _read_file - function to read file
+ * @file: pointer to input fire
+ * Return: line string
+ */
+char *_read_file(FILE *file)
 {
-stack_t *hd;
-(void)counter;
-
-hd = *head;
-if (hd == NULL)
-return;
-while (hd)
+char *line = NULL;
+size_t len = 0;
+ssize_t read ;
+long size;
+fseek(file, 0, SEEK_END);
+size = ftell(file);
+rewind(file);
+line = malloc(sizeof(char) * (size + 1));
+if (line == NULL)
 {
-printf("%d\n", hd->n);
-hd = hd->next;
-}
-}
-
-/**
- * r_push - add-node tothe tack
- * @head: stack had
- * @counter: line_number
- * Return: noreturn value
-*/
-void r_push(stack_t **head, unsigned int counter)
-{
-int n, j = 0, flag = 0;
-
-if (buas.arg)
-{
-if (buas.arg[0] == '-')
-j++;
-for (; buas.arg[j] != '\0'; j++)
-{
-if (buas.arg[j] > 57 || buas.arg[j] < 48)
-flag = 1;
-}
-if (flag == 1)
-{
-fprintf(stderr, "L%d: usage: push integer\n", counter);
-fclose(buas.file);
-free(buas.content);
-free_stack(*head);
+fprintf(stderr, "Error: malloc failed\n");
 exit(EXIT_FAILURE);
 }
-}
-else
+while ((read = fread(line + len, 1, size - len, file)) > 0)
 {
-fprintf(stderr, "L%d: usage: push integer\n", counter);
-fclose(buas.file);
-free(buas.content);
-free_stack(*head);
-exit(EXIT_FAILURE); }
-n = atoi(buas.arg);
-if (buas.lifi == 0)
-add_node(head, n);
+len += read;
+}
+line[len] = '\0';
+return (line);
+}
+
+/**
+ * free_stack - function to free stack
+ * @stack: input linked list
+ * Return: void
+ */
+void free_stack(stack_t *stack)
+{
+stack_t *temp;
+
+while (stack != NULL)
+{
+temp = stack;
+stack = stack->next;
+free(temp);
+}
 }

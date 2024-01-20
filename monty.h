@@ -8,6 +8,7 @@
 #include <limits.h>
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
+#define POSIX .1-2008
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,44 +51,13 @@ typedef struct numbers_s {
   unsigned int n;
 } num_t;
 
-
-/**
- * struct buas_s - variables -args, file- line-content
- * @arg: value
- * @file: pointghcgc ,lko monty file
- * @content: line tent
- * @lifi: flag change stack <-> queue
- * Description: carrs vals throh theram
- */
-typedef struct buas_s
-{
-	char *arg;
-	FILE *file;
-	char *content;
-	int lifi;
-}  buas_t;
-extern buas_t buas;
-
-int main(int argc, char *argv[]);
-FILE *_open_file(char *argv);
 char *_read_file(FILE *file);
-void free_stack(stack_t *head);
-int execute(char *cntnt, stack_t **stack, unsigned int counter, FILE *file);
-void add_node(stack_t **head, int n);
-void r_push(stack_t **head, unsigned int counter);
-void r_pall(stack_t **head, unsigned int counter);
-void r_pint(stack_t **head, unsigned int number);
-void r_pop(stack_t **head, unsigned int counter);
-void r_swap(stack_t **head, unsigned int counter);
-void r_add(stack_t **head, unsigned int counter);
-void r_nop(stack_t **head, unsigned int counter);
-void r_sub(stack_t **head, unsigned int counter);
-void r_div(stack_t **head, unsigned int counter);
-void r_mul(stack_t **head, unsigned int counter);
-void r_mod(stack_t **head, unsigned int counter);
-void r_pchar(stack_t **head, unsigned int counter);
-void r_pstr(stack_t **head, unsigned int counter);
-void r_rotl(stack_t **head, unsigned int counter);
-void r_rotr(stack_t **head, __attribute__((unused)) unsigned int counter);
+void free_stack(stack_t *stack);
+stack_t *add_node(stack_t **stack, unsigned int line_number);
+void execute(char *buffer, stack_t **stack);
+
+void push(stack_t **stack, unsigned int line_number);
+void pall(stack_t **stack, unsigned int line_number);
+int main(int argc, char *argv[]);
 
 #endif
